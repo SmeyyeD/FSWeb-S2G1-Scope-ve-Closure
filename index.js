@@ -194,10 +194,11 @@ function skorTabelasi(callback1, callback2, ceyrekSayisi) {
     skorHome = skorHome + evSahibiSkor;
     skorAway = skorAway + konukTakimSkor;
   }
+  // Maç sonucunu ekliyoruz
   skorTabela.push(
     `Maç Sonucu: Ev Sahibi ${skorHome} - Konuk Takım ${skorAway}`
   );
-
+  // Oluşan arrayi döndürüyoruz
   return skorTabela;
 }
 
