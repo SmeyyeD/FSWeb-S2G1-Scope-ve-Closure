@@ -54,6 +54,7 @@ function skor2() {
 }
 
 
+
 /* Görev 2: takimSkoru() 
 Aşağıdaki takimSkoru() fonksiyonununda aşağıdakileri yapınız:
   1. Bir çeyrekte bir takımın ürettiği skoru rastgele(random) elde eden bir sonuc dönünüz(return)
@@ -64,9 +65,10 @@ Aşağıdaki takimSkoru() fonksiyonununda aşağıdakileri yapınız:
 Not: Bu fonskiyon, aşağıdaki diğer görevler için de bir callback fonksiyonu olarak da kullanılacak
 */
 
-function takimSkoru(/*Kodunuzu buraya yazınız*/){
-    /*Kodunuzu buraya yazınız*/
+function takimSkoru(){
+   return Math.floor(Math.random() * 16) + 10;
 }
+console.log(takimSkoru());
 
 
 
@@ -86,10 +88,24 @@ Aşağıdaki macSonucu() fonksiyonununda aşağıdakileri yapınız:
 }
 */ 
 
-function macSonucu(/*Kodunuzu buraya yazınız*/){
-  /*Kodunuzu buraya yazınız*/
-}
+function macSonucu(takimSkoruCallback, CeyrekSayisi){
+  let evSahibiSkor = 0;
+  let konukTakimSkor = 0;
+  
+  for( let ceyrek = 1; ceyrek <= CeyrekSayisi; ceyrek++) {
+    const evSahibiCeyrekSkoru = takimSkoruCallback();
+    const konukTakimCeyrekSkoru = takimSkoruCallback();
 
+    evSahibiSkor += evSahibiCeyrekSkoru;
+    konukTakimSkor += konukTakimCeyrekSkoru;
+  }
+  return {
+    "EvSahibi": evSahibiSkor,
+    "KonukTakim": konukTakimSkor
+  };
+}
+const sonuc = macSonucu(takimSkoru, 4);
+console.log(sonuc);
 
 
 
@@ -109,11 +125,13 @@ Aşağıdaki periyotSkoru() fonksiyonununda aşağıdakileri yapınız:
   */
 
 
-function periyotSkoru(/*Kodunuzu buraya yazınız*/) {
-  /*Kodunuzu buraya yazınız*/
-
+function periyotSkoru(callback) {
+  return {
+    EvSahibi: callback(),
+    KonukTakim: callback(),
+  };
 }
-
+console.log(periyotSkoru(takimSkoru));
 
 /* Zorlayıcı Görev 5: skorTabelasi() 
 Aşağıdaki skorTabelasi() fonksiyonunu kullanarak aşağıdakileri yapınız:
@@ -146,11 +164,44 @@ MAÇ UZAR ise skorTabelasi(periyotSkoru,takimSkoru,4)
 ] */
 // NOTE: Bununla ilgili bir test yoktur. Eğer logladığınız sonuçlar yukarıdakine benziyor ise tmamlandı sayabilirsiniz.
 
-function skorTabelasi(/*Kodunuzu buraya yazınız*/) {
-  /*Kodunuzu buraya yazınız*/
+function skorTabelasi(callback1, callback2, ceyrekSayisi) {
+  // Tanımlamalar
+  let skorTabela = [];
+  let skorHome = 0;
+  let skorAway = 0;
+  let evSahibiSkor, konukTakimSkor;
+  //Çeyrek sayısı kadar maç oynatılıyor
+  for (let i = 1; i <= ceyrekSayisi; i++){
+    const periyot = callback1(callback2);
+    evSahibiSkor = periyot.EvSahibi;
+    konukTakimSkor = periyot.KonukTakim;
+    skorTabela.push(
+      `${i}. Periyot: Ev Sahibi ${evSahibiSkor} - Konuk Takım ${konukTakimSkor}`
+    );
+    skorHome = skorHome + evSahibiSkor;
+    skorAway = skorAway + konukTakimSkor;
+  }
+  //Beraberlik durumunda uzatmalar oynatılıyor
+  let i = 1;
+  while (skorHome == skorAway) {
+    const periyot = callback1(callback2);
+    evSahibiSkor = periyot.EvSahibi;
+    konukTakimSkor = periyot.KonukTakim;
+    skorTabela.push(
+      `${i}. Uzatma: Ev Sahibi ${evSahibiSkor} - Konuk Takım ${konukTakimSkor}`
+    );
+    i++;
+    skorHome = skorHome + evSahibiSkor;
+    skorAway = skorAway + konukTakimSkor;
+  }
+  skorTabela.push(
+    `Maç Sonucu: Ev Sahibi ${skorHome} - Konuk Takım ${skorAway}`
+  );
+
+  return skorTabela;
 }
 
-
+console.log(skorTabelasi(periyotSkoru, takimSkoru, 4));
 
 
 /* Aşağıdaki satırları lütfen değiştirmeyiniz*/
