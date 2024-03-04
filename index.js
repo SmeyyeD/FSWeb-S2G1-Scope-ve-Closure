@@ -88,24 +88,19 @@ Aşağıdaki macSonucu() fonksiyonununda aşağıdakileri yapınız:
 }
 */ 
 
-function macSonucu(takimSkoruCallback, CeyrekSayisi){
-  let evSahibiSkor = 0;
-  let konukTakimSkor = 0;
-  
-  for( let ceyrek = 1; ceyrek <= CeyrekSayisi; ceyrek++) {
-    const evSahibiCeyrekSkoru = takimSkoruCallback();
-    const konukTakimCeyrekSkoru = takimSkoruCallback();
-
-    evSahibiSkor += evSahibiCeyrekSkoru;
-    konukTakimSkor += konukTakimCeyrekSkoru;
+function macSonucu(callback, ceyrekSayisi){
+  let EvSahibi = 0;
+  let KonukTakim = 0;
+  for ( let i = 1; i <= ceyrekSayisi; i++) {
+    EvSahibi += callback();
+    KonukTakim += callback();
   }
   return {
-    "EvSahibi": evSahibiSkor,
-    "KonukTakim": konukTakimSkor
+    EvSahibi: EvSahibi,
+    KonukTakim: KonukTakim,
   };
 }
-const sonuc = macSonucu(takimSkoru, 4);
-console.log(sonuc);
+console.log(macSonucu(takimSkoru, 4));
 
 
 
@@ -164,44 +159,42 @@ MAÇ UZAR ise skorTabelasi(periyotSkoru,takimSkoru,4)
 ] */
 // NOTE: Bununla ilgili bir test yoktur. Eğer logladığınız sonuçlar yukarıdakine benziyor ise tmamlandı sayabilirsiniz.
 
-function skorTabelasi(callback1, callback2, ceyrekSayisi) {
+function skorTabelasi(periyotSkoru, takimSkoru, ceyrekSayisi) {
   // Tanımlamalar
   let skorTabela = [];
-  let skorHome = 0;
-  let skorAway = 0;
+  let EvSahibi = 0;
+  let KonukTakim = 0;
   let evSahibiSkor, konukTakimSkor;
-  //Çeyrek sayısı kadar maç oynatılıyor
-  for (let i = 1; i <= ceyrekSayisi; i++){
-    const periyot = callback1(callback2);
+    // Ceyrek Sayısı kadar maç oynatılıyor
+  for (let i = 1; i <= ceyrekSayisi; i++) {
+    const periyot = periyotSkoru(takimSkoru)
     evSahibiSkor = periyot.EvSahibi;
     konukTakimSkor = periyot.KonukTakim;
-    skorTabela.push(
-      `${i}. Periyot: Ev Sahibi ${evSahibiSkor} - Konuk Takım ${konukTakimSkor}`
+    skorTabela.push( `${i}. Periyot: Ev Sahibi ${periyot.EvSahibi} - Konuk Takım ${periyot.KonukTakim}`
     );
-    skorHome = skorHome + evSahibiSkor;
-    skorAway = skorAway + konukTakimSkor;
+    EvSahibi = EvSahibi + evSahibiSkor;
+    KonukTakim = KonukTakim + konukTakimSkor;
   }
-  //Beraberlik durumunda uzatmalar oynatılıyor
+    // Beraberlik durumunda uzatmalar oynatılıyor
   let i = 1;
-  while (skorHome == skorAway) {
-    const periyot = callback1(callback2);
+  while (EvSahibi == KonukTakim) {
+    const periyot = periyotSkoru(takimSkoru);
     evSahibiSkor = periyot.EvSahibi;
     konukTakimSkor = periyot.KonukTakim;
     skorTabela.push(
-      `${i}. Uzatma: Ev Sahibi ${evSahibiSkor} - Konuk Takım ${konukTakimSkor}`
+      `${i}. Uzatma: Ev Sahibi ${EvSahibi} - Konuk Takım ${KonukTakim}`
     );
-    i++;
-    skorHome = skorHome + evSahibiSkor;
-    skorAway = skorAway + konukTakimSkor;
+    i++
+    EvSahibi = EvSahibi + evSahibiSkor;
+    KonukTakim = KonukTakim + konukTakimSkor;
   }
-  // Maç sonucunu ekliyoruz
+    // Maç Sonucu
   skorTabela.push(
-    `Maç Sonucu: Ev Sahibi ${skorHome} - Konuk Takım ${skorAway}`
+    `Maç Sonucu: Ev Sahibi ${EvSahibi} - Konuk Takım ${KonukTakim}`
   );
-  // Oluşan arrayi döndürüyoruz
+    // Oluşan Array'i dönüyoruz
   return skorTabela;
 }
-
 console.log(skorTabelasi(periyotSkoru, takimSkoru, 4));
 
 
